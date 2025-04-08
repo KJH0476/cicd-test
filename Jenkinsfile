@@ -9,7 +9,6 @@ pipeline {
                 git branch: 'main',
                     credentialsId: 'gitHub-cicd-test',
                     url: 'https://github.com/KJH0476/cicd-test.git'
-                }
             }
         }
         stage('테스트') {
