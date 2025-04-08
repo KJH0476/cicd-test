@@ -3,8 +3,7 @@ pipeline {
     agent any
 
     stages {
-        stage('깃허브 체크아웃') {
-            // main 브랜치에서만 이 스테이지가 실행됨
+        stage('준비') {
             steps {
                 sh "echo 'Ready'"
                 git branch: 'main',
@@ -13,7 +12,7 @@ pipeline {
                 }
             }
         }
-        stage('빌드 테스트') {
+        stage('테스트') {
             steps {
                 // Gradle을 이용한 테스트 실행
                 sh './gradlew clean test'
@@ -38,8 +37,8 @@ pipeline {
                             verbose: true, // 실행 과정을 로그로 상세 출력
                             transfers: [
                                 sshTransfer(
-                                    sourceFiles: "build/libs/*.jar", // 빌드 산출물 지정
-                                    remoteDirectory: "/opt/cicd-test-app", // 원격 서버 파일 저장 디렉터리
+                                    sourceFiles: 'build/libs/*.jar', // 빌드 산출물 지정
+                                    remoteDirectory: '/opt/cicd-test-app', // 원격 서버 파일 저장 디렉터리
                                     // jar 파일에 실행권한 부여, systemd 재로드 및 서비스 재시작
                                     execCommand: '''
                                         chmod +x /opt/cicd-test-app/*.jar
@@ -58,7 +57,7 @@ pipeline {
     // 파이프라인 종료 후 항상 현재 브랜치 정보를 출력
     post {
         always {
-            echo "파이프라인 종료. 현재 브랜치: ${env.BRANCH_NAME}"
+            echo '파이프라인 종료. 현재 브랜치: ${env.BRANCH_NAME}'
         }
     }
 }
