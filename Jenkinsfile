@@ -1,10 +1,6 @@
 pipeline {
     // Jenkins 에이전트 지정(모든 에이전트에서 실행)
     agent any
-    environment {
-        JAVA_HOME = '/usr/lib/jvm/java-17-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-    }
 
     stages {
         stage('준비') {
