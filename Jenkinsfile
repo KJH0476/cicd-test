@@ -39,12 +39,8 @@ pipeline {
                                     sshTransfer(
                                         sourceFiles: 'build/libs/*.jar', // 빌드 산출물 지정
                                         remoteDirectory: '/opt/cicd-test-app', // 원격 서버 파일 저장 디렉터리
-                                        // jar 파일에 실행권한 부여, systemd 재로드 및 서비스 재시작
-                                        execCommand: '''
-                                            chmod +x /opt/cicd-test-app/*.jar
-                                            systemctl daemon-reload
-                                            systemctl restart cicd-service.service
-                                        '''
+                                        // 배포 스크립트 실행
+                                        execCommand: 'sh /home/ubuntu/deploy.sh'
                                     )
                                 ]
                             )
