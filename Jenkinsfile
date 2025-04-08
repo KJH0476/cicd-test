@@ -9,10 +9,10 @@ pipeline {
     stages {
         stage('준비') {
             steps {
+                echo '빌드 준비!'
                 git branch: 'main',
                     credentialsId: 'gitHub-cicd-test',
                     url: 'https://github.com/KJH0476/cicd-test.git'
-                echo '빌드 준비!'
             }
         }
         stage('테스트') {
