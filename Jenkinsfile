@@ -38,7 +38,7 @@ pipeline {
                                 transfers: [
                                     sshTransfer(
                                         sourceFiles: 'build/libs/*.jar', // 빌드 산출물 지정
-                                        remoteDirectory: '/opt/cicd-test-app', // 원격 서버 파일 저장 디렉터리
+                                        remoteDirectory: 'cicd-test-app', // 원격 서버 파일 저장 디렉터리
                                         // 배포 스크립트 실행
                                         execCommand: 'sh /home/ubuntu/deploy.sh'
                                     )
