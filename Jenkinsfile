@@ -2,37 +2,25 @@ pipeline {
     // Jenkins 에이전트 지정(모든 에이전트에서 실행)
     agent any
 
-    // GitHub Webhook 푸시 이벤트를 트리거로 설정
-    triggers {
-        githubPush()
-    }
-
     stages {
         stage('깃허브 체크아웃') {
             // main 브랜치에서만 이 스테이지가 실행됨
-            when {
-                branch 'main'
-            }
             steps {
-                // 저장소에서 소스코드 체크아웃 (checout 오타 없이 checkout으로 사용)
-                checkout scm
-                echo 'Git 체크아웃 성공!'
+                sh "echo 'Ready'"
+                git branch: 'main',
+                    credentialsId: 'gitHub-cicd-test',
+                    url: 'https://github.com/KJH0476/cicd-test.git'
+                }
             }
         }
         stage('빌드 테스트') {
-            when {
-                branch 'main'
-            }
             steps {
                 // Gradle을 이용한 테스트 실행
-                sh './gradlew test'
+                sh './gradlew clean test'
                 echo '테스트 성공!'
             }
         }
         stage('빌드') {
-            when {
-                branch 'main'
-            }
             steps {
                 // 클린 후 빌드 실행
                 sh './gradlew clean build'
@@ -40,9 +28,6 @@ pipeline {
             }
         }
         stage('배포') {
-            when {
-                branch 'main'
-            }
             steps([$class: 'BapSshPromotionPublishPlugin']) {
                 sshPublisher(
                     continueOnError: false,
