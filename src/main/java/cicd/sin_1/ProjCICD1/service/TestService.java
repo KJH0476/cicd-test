@@ -6,6 +6,6 @@ import org.springframework.stereotype.Service;
 public class TestService {
 
     public String test() {
-        return "Hello World!, 첫 배포!";
+        return "Hello World!, CICD 테스트";
     }
 }
