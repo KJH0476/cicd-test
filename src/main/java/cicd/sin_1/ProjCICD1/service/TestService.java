@@ -5,7 +5,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TestService {
 
-    public String test() {
-        return "Hello World!, CICD 테스트 7";
+    public String test1() {
+        return "Hello World!, test1(), CICD 1";
+    }
+
+    public String test2() {
+        return "Hello World!, test2(), CICD 1";
     }
 }
