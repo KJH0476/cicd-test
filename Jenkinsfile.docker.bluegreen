@@ -37,9 +37,17 @@ pipeline {
         }
         stage('Docker 빌드') {
             steps {
-                // 최신 Docker 이미지 빌드 및 푸시
-                sh "cd cicd-test && docker build -t hyeok1234565/cicd-test:${env.IMAGE_TAG} ."
-                sh "docker push hyeok1234565/cicd-test:${env.IMAGE_TAG}"
+                // 최신 Docker 이미지 빌드
+                sh "docker build -t hyeok1234565/cicd-test:${env.IMAGE_TAG} ."
+            }
+            post {
+                success {
+                    echo "빌드 성공: hyeok1234565/cicd-test:${env.IMAGE_TAG}"
+                }
+                failure {
+                    echo "빌드 실패: hyeok1234565/cicd-test:${env.IMAGE_TAG}"
+                    sh "docker rmi hyeok1234565/cicd-test:${env.IMAGE_TAG} || true"
+                }
             }
         }
         stage('Docker 이미지 테스트') {
