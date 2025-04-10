@@ -1,0 +1,88 @@
+pipeline {
+    agent any
+    environment {
+        DOCKER_BUILDKIT = 1
+    }
+
+    stages {
+        stage('준비') {
+            steps {
+                sh "echo '빌드 준비!'"
+                git branch: 'main',
+                credentialsId: 'gitHub-cicd-test',
+                url: 'https://github.com/KJH0476/cicd-test.git'
+                script {
+                    def buildId = env.BUILD_ID
+                    def timestamp = new Date().format('yyyyMMdd-HHmmss')
+                    env.IMAGE_TAG = "${buildId}-${timestamp}"
+                }
+                echo "이미지 태그: ${env.IMAGE_TAG}"
+            }
+        }
+        stage('DockerHub 로그인') {
+            steps {
+                // Docker Hub 로그인
+                withCredentials([usernamePassword(credentialsId: 'DOCKER-USER', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                    sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                }
+            }
+            post {
+                success {
+                    echo "DockerHub 로그인 성공"
+                }
+                failure {
+                    echo "DockerHub 로그인 실패 - 자격 증명 확인 필요"
+                }
+            }
+        }
+        stage('Docker 빌드') {
+            steps {
+                // 최신 Docker 이미지 빌드 및 푸시
+                sh "cd cicd-test && docker build -t hyeok1234565/cicd-test:${env.IMAGE_TAG} ."
+                sh "docker push hyeok1234565/cicd-test:${env.IMAGE_TAG}"
+            }
+        }
+        stage('Docker 이미지 테스트') {
+            steps {
+                // Docker 이미지 테스트
+                sh "docker run --rm hyeok1234565/cicd-test:${env.IMAGE_TAG} /bin/sh -c 'echo \"Docker 이미지 테스트 성공!\"'"
+            }
+        }
+        stage('Docker 이미지 푸시') {
+            steps {
+                sh "docker push hyeok1234565/cicd-test:${env.IMAGE_TAG}"
+            }
+        }
+        stage('배포') {
+            steps {
+                script {
+                    sshPublisher(
+                        continueOnError: false,
+                        failOnError: true, // 배포 과정에서 오류 발생 시 빌드 중단
+                        publishers: [
+                            sshPublisherDesc(
+                                configName: 'app-ssh-server', // 사전에 설정한 SSH 서버 이름
+                                verbose: true, // 실행 과정을 로그로 상세 출력
+                                transfers: [
+                                    sshTransfer(
+                                        // 배포 스크립트 실행
+                                        execCommand: 'export IMAGE_TAG=${env.IMAGE_TAG} && sh /home/ubuntu/blue_green_deploy.sh'
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                }
+                echo '배포 성공!'
+            }
+        }
+    }
+    post {
+        success {
+            echo "배포 및 트래픽 전환 성공"
+        }
+        failure {
+            echo "배포 중 오류 발생 - 롤백 또는 로그 확인 필요"
+        }
+    }
+}
