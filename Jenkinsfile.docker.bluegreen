@@ -78,7 +78,7 @@ pipeline {
                                 transfers: [
                                     sshTransfer(
                                         // 배포 스크립트 실행
-                                        execCommand: "sh blue_green_deploy.sh ${env.IMAGE_TAG}"
+                                        execCommand: "bash blue_green_deploy.sh ${env.IMAGE_TAG}"
                                     )
                                 ]
                             )
