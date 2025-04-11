@@ -55,7 +55,7 @@ pipeline {
         stage('Docker 이미지 테스트') {
             steps {
                 // Docker 이미지 테스트
-                sh "docker run --rm $REPOSITORY:$IMAGE_TAG /bin/sh -c 'echo \"Docker 이미지 테스트 성공!\"'"
+                sh "docker run --rm --entrypoint /bin/sh $REPOSITORY:$IMAGE_TAG -c 'echo \"Docker 이미지 스모크 테스트 성공\"'"
             }
         }
         stage('Docker 이미지 푸시') {

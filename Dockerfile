@@ -12,7 +12,7 @@ RUN chmod +x gradlew
 RUN ./gradlew build -x test --no-daemon || true
 
 COPY . .
-RUN ./gradlew build -x test --no-daemon
+RUN ./gradlew build --no-daemon
 
 RUN rm -rf /app/.gradle /app/build/tmp /app/build/classes /app/build/resources
 
