@@ -13,7 +13,7 @@ public class TestController {
 
     private final TestService testService;
 
-    @GetMapping("/test")
+    @GetMapping("/test1")
     public String test1(Model model) {
         model.addAttribute("message", testService.test1());
         return "home";
