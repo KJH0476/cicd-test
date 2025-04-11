@@ -3,13 +3,16 @@ FROM gradle:7.5.1-jdk17 AS build
 
 WORKDIR /app
 
-COPY build.gradle settings.gradle ./
+COPY gradlew gradlew.bat ./
+COPY gradle ./gradle
+COPY settings.gradle build.gradle ./
 
-RUN gradle dependencies --no-daemon
+RUN chmod +x gradlew
+
+RUN ./gradlew build -x test --no-daemon || true
 
 COPY . .
-
-RUN gradle build -x test --no-daemon
+RUN ./gradlew build -x test --no-daemon
 
 RUN rm -rf /app/.gradle /app/build/tmp /app/build/classes /app/build/resources
 
