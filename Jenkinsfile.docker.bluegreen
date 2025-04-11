@@ -78,7 +78,7 @@ pipeline {
                                 transfers: [
                                     sshTransfer(
                                         // 배포 스크립트 실행
-                                        execCommand: 'export IMAGE_TAG=${env.IMAGE_TAG} && sh /home/ubuntu/blue_green_deploy.sh'
+                                        execCommand: "sh /home/ubuntu/blue_green_deploy.sh ${env.IMAGE_TAG}"
                                     )
                                 ]
                             )
