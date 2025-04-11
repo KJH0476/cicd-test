@@ -2,6 +2,7 @@ pipeline {
     agent any
     environment {
         DOCKER_BUILDKIT = 1
+        REPOSITORY = 'hyeok1234565/cicd-test'
     }
 
     stages {
@@ -39,27 +40,27 @@ pipeline {
         stage('Docker 빌드') {
             steps {
                 // 최신 Docker 이미지 빌드
-                sh "docker build -t hyeok1234565/cicd-test:${env.IMAGE_TAG} ."
+                sh "docker build --platform linux/amd64 -t $REPOSITORY:$IMAGE_TAG ."
             }
             post {
                 success {
-                    echo "빌드 성공: hyeok1234565/cicd-test:${env.IMAGE_TAG}"
+                    echo "빌드 성공: $REPOSITORY:$IMAGE_TAG"
                 }
                 failure {
-                    echo "빌드 실패: hyeok1234565/cicd-test:${env.IMAGE_TAG}"
-                    sh "docker rmi hyeok1234565/cicd-test:${env.IMAGE_TAG} || true"
+                    echo "빌드 실패: $REPOSITORY:$IMAGE_TAG"
+                    sh "docker rmi $REPOSITORY:$IMAGE_TAG || true"
                 }
             }
         }
         stage('Docker 이미지 테스트') {
             steps {
                 // Docker 이미지 테스트
-                sh "docker run --rm hyeok1234565/cicd-test:${env.IMAGE_TAG} /bin/sh -c 'echo \"Docker 이미지 테스트 성공!\"'"
+                sh "docker run --rm $REPOSITORY:$IMAGE_TAG /bin/sh -c 'echo \"Docker 이미지 테스트 성공!\"'"
             }
         }
         stage('Docker 이미지 푸시') {
             steps {
-                sh "docker push hyeok1234565/cicd-test:${env.IMAGE_TAG}"
+                sh "docker push $REPOSITORY:$IMAGE_TAG"
             }
         }
         stage('배포') {
