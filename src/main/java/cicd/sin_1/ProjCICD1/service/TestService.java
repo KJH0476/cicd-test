@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 public class TestService {
 
     public String test1() {
-        return "Hello World!, BLUE API1, RUN 8080";
+        return "Hello World!, GREEN API1, RUN 8081";
     }
 
     public String test2() {
-        return "Hello World!, BLUE API2, RUNT 8080";
+        return "Hello World!, GREEN API2, RUNT 8081";
     }
 }
