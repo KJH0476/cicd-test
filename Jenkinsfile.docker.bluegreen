@@ -1,7 +1,6 @@
 pipeline {
     agent any
     environment {
-        DOCKER_BUILDKIT = 1
         REPOSITORY = 'hyeok1234565/cicd-test'
     }
 
@@ -9,7 +8,6 @@ pipeline {
         stage('준비') {
             steps {
                 sh "echo '빌드 준비!'"
-                sh 'whoami'
                 git branch: 'main',
                 credentialsId: 'gitHub-cicd-test',
                 url: 'https://github.com/KJH0476/cicd-test.git'
